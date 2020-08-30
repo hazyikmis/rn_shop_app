@@ -6,6 +6,9 @@ import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
 import Colors from '../constants/Colors';
 import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
 
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import HeaderButton from '../components/UI/HeaderButton';
+
 const defaultStackNavScreenOptions = {
   headerStyle: {
     //height: 80,
@@ -30,9 +33,19 @@ const ProductsNavigator = (navProps) => {
       <StackProd.Screen
         name="ProductsOverview"
         component={ProductsOverviewScreen}
-        options={{
+        //options={{ headerTitle: 'All Products' }}
+        options={({ route }) => ({
           headerTitle: 'All Products',
-        }}
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+              <Item
+                title="Cart"
+                iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                onPress={() => console.log('Cart pressed')}
+              />
+            </HeaderButtons>
+          ),
+        })}
       />
       <StackProd.Screen
         name="ProductDetail"
