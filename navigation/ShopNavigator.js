@@ -8,6 +8,7 @@ import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
 
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/UI/HeaderButton';
+import CartScreen from '../screens/shop/CartScreen';
 
 const defaultStackNavScreenOptions = {
   headerStyle: {
@@ -26,22 +27,24 @@ const defaultStackNavScreenOptions = {
 
 const StackProd = createStackNavigator();
 
-const ProductsNavigator = (navProps) => {
-  //console.log(navProps); //empty object!!!
+const ProductsNavigator = () => {
   return (
     <StackProd.Navigator screenOptions={defaultStackNavScreenOptions}>
       <StackProd.Screen
         name="ProductsOverview"
         component={ProductsOverviewScreen}
         //options={{ headerTitle: 'All Products' }}
-        options={({ route }) => ({
+        options={({ route, navigation }) => ({
           headerTitle: 'All Products',
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
               <Item
                 title="Cart"
                 iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
-                onPress={() => console.log('Cart pressed')}
+                //the event onPress below should takes us to the "CartScreen.js"
+                //2 things required: 1.CartScreen should be registered to the navigator
+                //onPress={() => console.log('Cart pressed')}
+                onPress={() => navigation.navigate('Cart')}
               />
             </HeaderButtons>
           ),
@@ -52,6 +55,11 @@ const ProductsNavigator = (navProps) => {
         component={ProductDetailScreen}
         //options={{ headerTitle: '...' }}
         options={({ route }) => ({ headerTitle: route.params.product.title })}
+      />
+      <StackProd.Screen
+        name="Cart"
+        component={CartScreen}
+        options={({ route }) => ({ headerTitle: 'Your Cart' })}
       />
     </StackProd.Navigator>
   );
