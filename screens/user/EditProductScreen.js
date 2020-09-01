@@ -42,6 +42,7 @@ const EditProductScreen = (props) => {
     } else {
       dispatch(createProduct(title, description, imageUrl, +price)); //to convert price to number!
     }
+    props.navigation.goBack();
   }, [dispatch, prodId, title, description, imageUrl, price]);
 
   useEffect(() => {

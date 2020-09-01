@@ -83,3 +83,28 @@ const initialState = {
   })}
 />
 ```
+
+# Usage of re-usable template Components (just for styling)
+
+> Normal way of styling in a component...
+
+```
+const Card = (props) => {
+  return <View style={styles.card}>{props.children}</View>;
+};
+```
+
+> This is styling with default style("card" in this example) and additional extra props if exist...
+> This is merging default styles with props
+
+```
+const Card = (props) => {
+  return <View style={{ ...styles.card, ...props.style }}>{props.children}</View>;
+};
+```
+
+> When calling from other component: default "card" styles combined with "product" styles.
+
+```
+<Card style={styles.product}>
+```
