@@ -13,6 +13,7 @@ import CartScreen from '../screens/shop/CartScreen';
 import OrdersScreen from '../screens/shop/OrdersScreen';
 
 import { Ionicons } from '@expo/vector-icons';
+import UserProductsScreen from '../screens/user/UserProductsScreen';
 
 const defaultStackNavScreenOptions = {
   headerStyle: {
@@ -41,6 +42,7 @@ const drawerMenu = (navigation) => (
   </HeaderButtons>
 );
 
+//PRODUCTS NAVIGATOR STACK
 const StackProd = createStackNavigator();
 
 const ProductsNavigator = () => {
@@ -82,6 +84,7 @@ const ProductsNavigator = () => {
   );
 };
 
+//ORDERS NAVIGATOR STACK
 const StackOrders = createStackNavigator();
 
 const OrdersNavigator = () => {
@@ -99,6 +102,25 @@ const OrdersNavigator = () => {
   );
 };
 
+//ADMIN NAVIGATOR STACK
+const StackAdmin = createStackNavigator();
+
+const AdminNavigator = () => {
+  return (
+    <StackAdmin.Navigator screenOptions={defaultStackNavScreenOptions}>
+      <StackAdmin.Screen
+        name="UserProducts"
+        component={UserProductsScreen}
+        options={({ navigation, route }) => ({
+          headerTitle: 'Your Products',
+          headerLeft: () => drawerMenu(navigation),
+        })}
+      />
+    </StackAdmin.Navigator>
+  );
+};
+
+//DRAWER MENU (MAIN MENU)
 const Drawer = createDrawerNavigator();
 
 const ShopNavigator = () => {
@@ -132,6 +154,19 @@ const ShopNavigator = () => {
           drawerIcon: () => (
             <Ionicons
               name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+              size={23}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Admin"
+        component={AdminNavigator}
+        options={{
+          drawerLabel: 'Admin',
+          drawerIcon: () => (
+            <Ionicons
+              name={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
               size={23}
             />
           ),
