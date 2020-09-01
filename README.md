@@ -123,3 +123,151 @@ const Card = (props) => {
 ```
 <Card style={styles.product}>
 ```
+
+# useReducer (for merging multiple states together)
+
+Now if you have that many states that are kind of connected, you also can do this in a more elegant way, instead of having your separate states for each input, you can have one big state which merges all input values and which merges all validities and then use a concept called a reducer, not a Redux reducer but one supported by React out the box to manage that state.
+
+You do this with the use reducer hook which again has nothing to do with Redux, the concept of a reducer is not Redux exclusive, a reducer in the end is just a function that takes input and spits out some output and therefore React also supports this.
+
+So what's the idea of a reducer? Now first it's important to understand that useReducer is a hook that helps you have state management. Typically you use it if you have connected states or more complex state and you don't want have a bunch of individual use state calls and a bunch of individual states which you
+manage. You then can use useReducer.
+
+Reducer function should be able to change that state when actions are dispatched and an action should be dispatched whatever we type into one of our text inputs, that will be the trigger. So therefore, we can now get rid of all these state assignments (all elements kept in state like: const [title, setTitle] = useState('')) and hence we can also get rid of the entire use state import even and make sure we dispatch the reducer update action for every keystroke we do in an input.
+
+```
+  //WITH THE USE OF useReducer, NO NEED TO USE THESE SEPARATE STATE ASSIGNMENTS
+  const [title, setTitle] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [price, setPrice] = useState('');
+  const [description, setDescription] = useState('');
+
+  //const [state, dispatch] = useReducer(reducer, initialState, init)
+    useReducer(formReducer, {
+    inputValues: {
+      title: '',
+      imageUrl: '',
+      description: '',
+      price: '',
+    },
+    inputValidities: {
+      title: true,
+      imageUrl: true,
+      description: true,
+      price: true,
+    },
+    formIsValid: true,
+  });
+```
+
+> Summarized usage of using react reducer for merging multiple states together in a form with multiple inputs (You can check detailed usage in the /screens/user/EditProductScreen.js)
+
+```
+import React, { useReducer } from 'react';
+
+...
+
+const formActions = {
+  FORM_INPUT_UPDATE: 'FORM_INPUT_UPDATE',
+  ANOTHER_ACTION: 'ANOTHER_ACTION',
+};
+
+...
+
+const formReducer = (state, action) => {
+  if (action.type === formActions.FORM_INPUT_UPDATE) {
+    const updatedValues = {
+      ...state.inputValues,
+      [action.input]: action.value,
+    };
+    const updatedValidities = {
+      ...state.inputValidities,
+      [action.input]: action.isValid,
+    };
+    let updatedFormIsValid = true;
+    for (const key in updatedValidities) {
+      updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
+    }
+    return {
+      inputValues: updatedValues,
+      inputValidities: updatedValidities,
+      formIsValid: updatedFormIsValid,
+    };
+  } else if (action.type === formActions.ANOTHER_ACTION) {
+    ...
+    return updatedState;
+  }
+  return state; //if another action happens
+};
+
+...
+
+const XXXScreen = (props) => {
+  //const [state, dispatch] = useReducer(reducer, initialState, init)
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      title: editedProduct ? editedProduct.title : '',
+      imageUrl: editedProduct ? editedProduct.imageUrl : '',
+      description: editedProduct ? editedProduct.description : '',
+      price: '',
+    },
+    inputValidities: {
+      title: editedProduct ? true : false,
+      imageUrl: editedProduct ? true : false,
+      description: editedProduct ? true : false,
+      price: editedProduct ? true : false,
+    },
+    formIsValid: editedProduct ? true : false,
+  });
+
+
+...
+
+  const textChangeHandler = (inputIdentifier, text) => {
+    let isValid = false;
+    if (text.trim().length > 0) {
+      isValid: true;
+    }
+    dispatchFormState({
+      type: formActions.FORM_INPUT_UPDATE,
+      value: text,
+      isValid: isValid,
+      input: inputIdentifier,
+    });
+  };
+
+...
+
+  return (
+    <ScrollView>
+      <View style={styles.form}>
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Title</Text>
+          <TextInput
+            style={styles.input}
+            value={formState.inputValues.title}
+            onChangeText={() => textChangeHandler('title')}
+            autoCapitalize="sentences"
+            autoCorrect
+            returnKeyType="next"
+          />
+        </View>
+        {!formState.inputValidities.title && (
+          <Text>Please enter a valid title!</Text>
+        )}
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Image URL</Text>
+          <TextInput
+            style={styles.input}
+            value={formState.inputValues.imageUrl}
+            onChangeText={() => textChangeHandler('imageUrl')}
+          />
+        </View>
+...
+        ...other_text_inputs
+      </View>
+    </ScrollView>
+  );
+};
+
+```
