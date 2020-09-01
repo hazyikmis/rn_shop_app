@@ -1,3 +1,18 @@
+# App Screenshots
+
+<div style="display: flex;">
+<img src="./zz_screenshots/Screenshot_1598978760.png" width="200" height="400" />
+<img src="./zz_screenshots/Screenshot_1598978773.png" width="200" height="400" />
+<img src="./zz_screenshots/Screenshot_1598978796.png" width="200" height="400" />
+<img src="./zz_screenshots/Screenshot_1598978822.png" width="200" height="400" />
+<img src="./zz_screenshots/Screenshot_1598978827.png" width="200" height="400" />
+<img src="./zz_screenshots/Screenshot_1598978836.png" width="200" height="400" />
+<img src="./zz_screenshots/Screenshot_1598978857.png" width="200" height="400" />
+<img src="./zz_screenshots/Screenshot_1598978867.png" width="200" height="400" />
+<img src="./zz_screenshots/Screenshot_1598978881.png" width="200" height="400" />
+<img src="./zz_screenshots/Screenshot_1598978891.png" width="200" height="400" />
+</div>
+
 # Installations
 
 - expo init rn_shop_app
