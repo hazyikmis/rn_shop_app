@@ -4,10 +4,12 @@ import {
   Text,
   Image,
   StyleSheet,
+  Button,
   TouchableOpacity,
   TouchableNativeFeedback,
   Platform,
 } from 'react-native';
+import Colors from '../../constants/Colors';
 
 const ProductItem = (props) => {
   //const {} = props;
@@ -20,7 +22,7 @@ const ProductItem = (props) => {
   return (
     <View style={styles.product}>
       <View style={styles.touchable}>
-        <TouchableComponent onPress={props.onSelect} useForeground>
+        <TouchableComponent onPress={props.onViewDetail} useForeground>
           <View>
             <View style={styles.imageContainer}>
               <Image
@@ -34,7 +36,18 @@ const ProductItem = (props) => {
                 ${props.product.price.toFixed(2)}
               </Text>
             </View>
-            <View style={styles.actions}>{props.children}</View>
+            <View style={styles.actions}>
+              <Button
+                title="View Details"
+                color={Colors.primaryColor}
+                onPress={props.onViewDetail}
+              />
+              <Button
+                title="To Cart"
+                color={Colors.primaryColor}
+                onPress={props.onAddToCart}
+              />
+            </View>
           </View>
         </TouchableComponent>
       </View>
@@ -95,40 +108,3 @@ const styles = StyleSheet.create({
 });
 
 export default ProductItem;
-
-/*
-  return (
-    <View style={styles.product}>
-      <View style={styles.touchable}>
-        <TouchableComponent onPress={props.onViewDetail} useForeground>
-          <View>
-            <View style={styles.imageContainer}>
-              <Image
-                source={{ uri: props.product.imageUrl }}
-                style={styles.image}
-              />
-            </View>
-            <View style={styles.details}>
-              <Text style={styles.title}>{props.product.title}</Text>
-              <Text style={styles.price}>
-                ${props.product.price.toFixed(2)}
-              </Text>
-            </View>
-            <View style={styles.actions}>
-              <Button
-                title="View Details"
-                color={Colors.primaryColor}
-                onPress={props.onViewDetail}
-              />
-              <Button
-                title="To Cart"
-                color={Colors.primaryColor}
-                onPress={props.onAddToCart}
-              />
-            </View>
-          </View>
-        </TouchableComponent>
-      </View>
-    </View>
-  );
-*/

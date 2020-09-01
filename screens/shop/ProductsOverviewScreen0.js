@@ -1,10 +1,9 @@
 import React from 'react';
-import { Button, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import ProductItem from '../../components/shop/ProductItem';
 
 import { addToCart } from '../../store/actions/cart';
-import Colors from '../../constants/Colors';
 
 const ProductsOverviewScreen = (props) => {
   //const {} = props;
@@ -35,41 +34,6 @@ const ProductsOverviewScreen = (props) => {
         <ProductItem
           product={itemData.item}
           //onViewDetail={viewDetailHandler}
-          //onViewDetail={() => viewDetailHandler(itemData.item)}
-          onSelect={() => viewDetailHandler(itemData.item)}
-          //onAddToCart={addToCartHandler}
-          //onAddToCart={() => addToCartHandler(itemData.item)}
-        >
-          <Button
-            title="View Details"
-            color={Colors.primaryColor}
-            onPress={() => viewDetailHandler(itemData.item)}
-          />
-          <Button
-            title="To Cart"
-            color={Colors.primaryColor}
-            //onPress={() => dispatch(addToCart(itemData.item))}  //this also works!
-            onPress={() => addToCartHandler(itemData.item)}
-          />
-        </ProductItem>
-      )}
-    />
-  );
-};
-
-export default ProductsOverviewScreen;
-
-//IN ORDER TO USE ProductItem component for different purposes, the template below hab been changed like above.
-//With this change, we can now use different buttons with different functionalities (as props.children)
-/*
-  return (
-    <FlatList
-      data={products}
-      keyExtractor={(item) => item.id}
-      renderItem={(itemData) => (
-        <ProductItem
-          product={itemData.item}
-          //onViewDetail={viewDetailHandler}
           onViewDetail={() => viewDetailHandler(itemData.item)}
           //onAddToCart={addToCartHandler}
           onAddToCart={() => addToCartHandler(itemData.item)}
@@ -77,4 +41,6 @@ export default ProductsOverviewScreen;
       )}
     />
   );
-*/
+};
+
+export default ProductsOverviewScreen;
