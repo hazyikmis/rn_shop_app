@@ -14,6 +14,7 @@ import OrdersScreen from '../screens/shop/OrdersScreen';
 
 import { Ionicons } from '@expo/vector-icons';
 import UserProductsScreen from '../screens/user/UserProductsScreen';
+import EditProductScreen from '../screens/user/EditProductScreen';
 
 const defaultStackNavScreenOptions = {
   headerStyle: {
@@ -114,6 +115,42 @@ const AdminNavigator = () => {
         options={({ navigation, route }) => ({
           headerTitle: 'Your Products',
           headerLeft: () => drawerMenu(navigation),
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+              <Item
+                title="Add"
+                iconName={
+                  Platform.OS === 'android' ? 'md-create' : 'ios-create'
+                }
+                onPress={() => navigation.navigate('EditProduct')}
+              />
+            </HeaderButtons>
+          ),
+        })}
+      />
+      <StackAdmin.Screen
+        name="EditProduct"
+        component={EditProductScreen}
+        options={({ navigation, route }) => ({
+          headerTitle:
+            route.params && route.params.productId
+              ? 'Edit Product'
+              : 'Add Product',
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+              <Item
+                title="Save"
+                iconName={
+                  Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'
+                }
+                onPress={() => {
+                  //console.log('form submitted!');
+                  //console.log(route);
+                  route.params['submit'](); //VERY CRITICAL TACTIC!
+                }}
+              />
+            </HeaderButtons>
+          ),
         })}
       />
     </StackAdmin.Navigator>

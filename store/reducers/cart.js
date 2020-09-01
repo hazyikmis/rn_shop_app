@@ -1,6 +1,7 @@
 import { cartActions } from '../actions/cart';
 import { orderActions } from '../actions/orders';
 import CartItem from '../../models/cart';
+import { productActions } from '../actions/products';
 
 const initialState = {
   //items: [], //keeping data as key-value pair (object) rather than array is better approach
@@ -61,6 +62,20 @@ export default (state = initialState, action) => {
     case orderActions.ADD_ORDER:
       //normally this action handled in the orders reducer, but in order to make changes on cart (to empty it) we are also handling here
       return initialState;
+    case productActions.DELETE_PRODUCT:
+      //we need to make sure the product must be deleted from cart if its deleted (??? BAD DESIGN DECISION!)
+      //not reduced by one, must be totally erased!
+      if (!state.items[action.pId]) {
+        return state;
+      }
+      const updatedItems = { ...state.items };
+      const itemTotal = state.items[action.pId].sum; //deleted item's total amount (price)
+      delete updatedItems[action.pId];
+      return {
+        ...state,
+        items: updatedItems,
+        totalAmount: state.totalAmount - itemTotal,
+      };
     default:
       return state;
   }
