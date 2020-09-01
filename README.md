@@ -7,8 +7,9 @@
 - expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
 - npm install @react-navigation/stack
 
-> All stackNavigators should be connected with drawerNavigator. And this drawerNavigator needs to be exported as default
-> Each first/default screen in stackNavigators should have a "headerLeft" menu icon for opening drawer menu
+> All stackNavigators should be connected with drawerNavigator. And this drawerNavigator needs to be exported as default.
+
+> Each first/default screen in stackNavigators should have a "headerLeft" menu icon for opening drawer menu.
 
 # Usage of UseSelector Hook (from react-redux npm library)
 

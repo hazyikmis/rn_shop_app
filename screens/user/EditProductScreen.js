@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native';
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { createProduct, updateProduct } from '../../store/actions/products';
 
 const EditProductScreen = (props) => {
   //const {} = props;
@@ -32,10 +33,16 @@ const EditProductScreen = (props) => {
   //THIS IS MIRACLE!
   //Define a function here (related to the data inside this page) and then using "useEffect" register this function to the route (add params of the route)
   //and then, this function accessible by the another screen/component (ShopNavigator) by using route.params['function']()
+  const dispatch = useDispatch();
   const submitHandler = useCallback(() => {
-    console.log('Submitting!');
+    //console.log('Submitting!');
     //YOU CAN DISPATCH A FUNCTION HERE (YOU CAN DO WHATEVER YOU WANT)
-  }, []);
+    if (editedProduct) {
+      dispatch(updateProduct(prodId, title, description, imageUrl));
+    } else {
+      dispatch(createProduct(title, description, imageUrl, +price)); //to convert price to number!
+    }
+  }, [dispatch, prodId, title, description, imageUrl, price]);
 
   useEffect(() => {
     props.navigation.setParams({ submit: submitHandler });
