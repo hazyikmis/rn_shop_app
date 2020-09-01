@@ -1,4 +1,5 @@
 import { cartActions } from '../actions/cart';
+import { orderActions } from '../actions/orders';
 import CartItem from '../../models/cart';
 
 const initialState = {
@@ -34,6 +35,32 @@ export default (state = initialState, action) => {
           totalAmount: state.totalAmount + prodPrice,
         };
       }
+    case cartActions.REMOVE_FROM_CART:
+      const selectedCartItem = state.items[action.prodId];
+      const currentQty = selectedCartItem.quantity;
+      let updatedCartItems;
+      if (currentQty > 1) {
+        //needs to be reduced the amount
+        const updatedCartItem = new CartItem(
+          selectedCartItem.quantity - 1,
+          selectedCartItem.productPrice,
+          selectedCartItem.productTitle,
+          selectedCartItem.sum - selectedCartItem.productPrice
+        );
+        updatedCartItems = { ...state.items, [action.prodId]: updatedCartItem };
+      } else {
+        //needs to be deleted from cart
+        updatedCartItems = { ...state.items };
+        delete updatedCartItems[action.prodId];
+      }
+      return {
+        ...state,
+        items: updatedCartItems,
+        totalAmount: state.totalAmount - selectedCartItem.productPrice,
+      };
+    case orderActions.ADD_ORDER:
+      //normally this action handled in the orders reducer, but in order to make changes on cart (to empty it) we are also handling here
+      return initialState;
     default:
       return state;
   }

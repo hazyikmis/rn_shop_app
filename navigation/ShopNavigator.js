@@ -1,6 +1,7 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
 import Colors from '../constants/Colors';
@@ -9,6 +10,9 @@ import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/UI/HeaderButton';
 import CartScreen from '../screens/shop/CartScreen';
+import OrdersScreen from '../screens/shop/OrdersScreen';
+
+import { Ionicons } from '@expo/vector-icons';
 
 const defaultStackNavScreenOptions = {
   headerStyle: {
@@ -25,6 +29,18 @@ const defaultStackNavScreenOptions = {
   },
 };
 
+const drawerMenu = (navigation) => (
+  <HeaderButtons HeaderButtonComponent={HeaderButton}>
+    <Item
+      title="Menu"
+      iconName="ios-menu"
+      onPress={() => {
+        navigation.toggleDrawer();
+      }}
+    />
+  </HeaderButtons>
+);
+
 const StackProd = createStackNavigator();
 
 const ProductsNavigator = () => {
@@ -36,6 +52,7 @@ const ProductsNavigator = () => {
         //options={{ headerTitle: 'All Products' }}
         options={({ route, navigation }) => ({
           headerTitle: 'All Products',
+          headerLeft: () => drawerMenu(navigation),
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
               <Item
@@ -65,4 +82,64 @@ const ProductsNavigator = () => {
   );
 };
 
-export default ProductsNavigator;
+const StackOrders = createStackNavigator();
+
+const OrdersNavigator = () => {
+  return (
+    <StackOrders.Navigator screenOptions={defaultStackNavScreenOptions}>
+      <StackOrders.Screen
+        name="Orders"
+        component={OrdersScreen}
+        options={({ navigation, route }) => ({
+          headerTitle: 'Your Orders',
+          headerLeft: () => drawerMenu(navigation),
+        })}
+      />
+    </StackOrders.Navigator>
+  );
+};
+
+const Drawer = createDrawerNavigator();
+
+const ShopNavigator = () => {
+  return (
+    <Drawer.Navigator
+      drawerContentOptions={{
+        activeTintColor: Colors.primaryColor,
+        labelStyle: {
+          fontFamily: 'open-sans-bold',
+        },
+      }}
+    >
+      <Drawer.Screen
+        name="Products"
+        component={ProductsNavigator}
+        options={{
+          drawerLabel: 'All Products',
+          drawerIcon: () => (
+            <Ionicons
+              name={Platform.OS === 'android' ? 'md-list' : 'ios-list'}
+              size={23}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Orders"
+        component={OrdersNavigator}
+        options={{
+          drawerLabel: 'Your Orders',
+          drawerIcon: () => (
+            <Ionicons
+              name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+              size={23}
+            />
+          ),
+        }}
+      />
+    </Drawer.Navigator>
+  );
+};
+
+//export default ProductsNavigator;
+export default ShopNavigator;
