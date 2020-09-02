@@ -274,3 +274,42 @@ const XXXScreen = (props) => {
 //JUST A SIDE NOTE: For each TextInput and other components wrapping it, like View; and are alongside with it, like Text (for label or validation error message, an "Input" template could be used. (check /components/UI/Input.js)
 
 ```
+
+# using Firebase as a API provider and doing all CRUD ops as it is back-end server
+
+> Normally direct connection from an app to DB is not secure. And you need to connect/call APIs from a back-end server, and this back-end server should connect to DB as secure as possible.
+
+> But thanks to Firabase DB; it provides us to connect and execute all DB ops as it is back-end server, via "fetch".
+
+```
+//the code below, inserts a document (row) to the "products" collection (table)
+//if "products" not exist, then creates it first !!!
+//SIDE-NOTE: ".json" must be appended
+
+const response = await fetch(
+  'https://your-app-5b06a.firebaseio.com/products.json/',
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title,
+      description,
+      imageUrl,
+      price,
+    }),
+  }
+);
+
+const resData = await response.json();
+
+console.log(resData);
+//do whatever you want with the resData
+//normally its just a key, like below
+/*
+  Object {
+    "name": "-MGBcxfaehm00Snvmnkl",
+  }
+*/
+```

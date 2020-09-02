@@ -128,7 +128,7 @@ const EditProductScreen = (props) => {
   }, [dispatch, prodId, formState]);
 
   useEffect(() => {
-    console.log('useEffect');
+    //console.log('useEffect');
     props.navigation.setParams({ submit: submitHandler });
     //  }, [submitHandler]);
   }, [
