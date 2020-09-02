@@ -275,11 +275,13 @@ const XXXScreen = (props) => {
 
 ```
 
-# using Firebase as a API provider and doing all CRUD ops as it is back-end server
+# using Firebase as a API provider and doing all CRUD ops as if there is a back-end server between your app and DB
 
 > Normally direct connection from an app to DB is not secure. And you need to connect/call APIs from a back-end server, and this back-end server should connect to DB as secure as possible.
 
 > But thanks to Firabase DB; it provides us to connect and execute all DB ops as it is back-end server, via "fetch".
+
+> No need to develop back-end/server app!!! (Of course, this is okay for only simple apps or testing somethings quickly)
 
 ```
 //the code below, inserts a document (row) to the "products" collection (table)
