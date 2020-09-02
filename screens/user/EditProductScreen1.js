@@ -1,16 +1,15 @@
 import React, { useEffect, useCallback, useReducer } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
+  TextInput,
   ScrollView,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { createProduct, updateProduct } from '../../store/actions/products';
-import Input from '../../components/UI/Input';
 
 const formActions = {
   FORM_INPUT_UPDATE: 'FORM_INPUT_UPDATE',
@@ -57,8 +56,6 @@ const EditProductScreen = (props) => {
     state.products.userProducts.find((prod) => prod.id === prodId)
   );
 
-  const dispatch = useDispatch();
-
   // const [titleIsValid, setTitleIsValid] = useState(false);
   // const [title, setTitle] = useState(editedProduct ? editedProduct.title : '');
   // const [imageUrl, setImageUrl] = useState(editedProduct ? editedProduct.imageUrl : '');
@@ -82,9 +79,26 @@ const EditProductScreen = (props) => {
     formIsValid: editedProduct ? true : false,
   });
 
+  const textChangeHandler = (inputIdentifier, text) => {
+    let isValid = false;
+    if (text.trim().length > 0) {
+      //setTitleIsValid(false);
+      isValid = true;
+    }
+    //setTitle(text);
+    dispatchFormState({
+      type: formActions.FORM_INPUT_UPDATE,
+      value: text,
+      isValid: isValid,
+      //input: 'title', //or 'imageUrl' or 'description'
+      input: inputIdentifier,
+    });
+  };
+
   //THIS IS MIRACLE!
   //Define a function here (related to the data inside this page) and then using "useEffect" register this function to the route (add params of the route)
   //and then, this function accessible by the another screen/component (ShopNavigator) by using route.params['function']()
+  const dispatch = useDispatch();
   const submitHandler = useCallback(() => {
     //console.log('Submitting!');
     //YOU CAN DISPATCH A FUNCTION HERE (YOU CAN DO WHATEVER YOU WANT)
@@ -98,11 +112,6 @@ const EditProductScreen = (props) => {
     }
     if (editedProduct) {
       //dispatch(updateProduct(prodId, title, description, imageUrl));
-      // console.log('prodId:', prodId);
-      // console.log('title:', formState.inputValues.title);
-      // console.log('description:', formState.inputValues.description);
-      // console.log('imageUrl:', formState.inputValues.imageUrl);
-
       dispatch(
         updateProduct(
           prodId,
@@ -122,108 +131,93 @@ const EditProductScreen = (props) => {
         )
       );
     }
-    // console.log('just before goback');
     props.navigation.goBack();
     //}, [dispatch, prodId, title, description, imageUrl, price, titleIsValid]);
   }, [dispatch, prodId, formState]);
 
   useEffect(() => {
-    console.log('useEffect');
     props.navigation.setParams({ submit: submitHandler });
-    //  }, [submitHandler]);
-  }, [
-    formState.inputValues.title,
-    formState.inputValues.imageUrl,
-    formState.inputValues.price,
-    formState.inputValues.description,
-  ]);
-
-  const inputChangeHandler = useCallback(
-    (inputIdentifier, inputValue, inputValidity) => {
-      dispatchFormState({
-        type: formActions.FORM_INPUT_UPDATE,
-        value: inputValue,
-        isValid: inputValidity,
-        input: inputIdentifier,
-      });
-    },
-    [dispatchFormState]
-  );
+  }, [submitHandler]);
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}
-    >
-      <ScrollView>
-        <View style={styles.form}>
-          <Input
-            id="title"
-            label="Title"
-            validationErrorMessage="Please enter a valid title!"
-            keyboardType="default"
+    <ScrollView>
+      <View style={styles.form}>
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Title</Text>
+          <TextInput
+            style={styles.input}
+            //value={title}
+            value={formState.inputValues.title}
+            //onChangeText={(text) => setTitle(text)}
+            //onChangeText={(text) => titleChangeHandler(text)}
+            onChangeText={(text) => textChangeHandler('title', text)}
             autoCapitalize="sentences"
             autoCorrect
             returnKeyType="next"
-            //onInputChange={() => inputChangeHandler('title')}
-            onInputChange={inputChangeHandler}
-            initialValue={editedProduct ? editedProduct.title : ''}
-            initiallyValid={!!editedProduct}
-            required
-          />
-
-          <Input
-            id="imageUrl"
-            label="Image Url"
-            validationErrorMessage="Please enter a valid image URL!"
-            keyboardType="default"
-            returnKeyType="next"
-            //onInputChange={() => inputChangeHandler('imageUrl')}
-            onInputChange={inputChangeHandler}
-            initialValue={editedProduct ? editedProduct.imageUrl : ''}
-            initiallyValid={!!editedProduct}
-            required
-          />
-
-          {editedProduct ? null : (
-            <Input
-              id="price"
-              label="Price"
-              validationErrorMessage="Please enter a valid price!"
-              keyboardType="decimal-pad"
-              returnKeyType="next"
-              //onInputChange={() => inputChangeHandler('price')}
-              onInputChange={inputChangeHandler}
-              required
-              min={0.1}
-            />
-          )}
-          <Input
-            id="description"
-            label="Description"
-            validationErrorMessage="Please enter a valid description!"
-            keyboardType="default"
-            autoCapitalize="sentences"
-            autoCorrect
-            multiline
-            numberOfLines={3}
-            //onInputChange={() => inputChangeHandler('description')}
-            onInputChange={inputChangeHandler}
-            initialValue={editedProduct ? editedProduct.description : ''}
-            initiallyValid={!!editedProduct}
-            required
-            minLength={5}
+            // onEndEditing={(event) => {
+            //   console.log(event.nativeEvent.text);
+            // }}
+            //onSubmitEditing={(event) => console.log(event)}
           />
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        {/* {!titleIsValid && <Text>Please enter a valid title!</Text>} */}
+        {!formState.inputValidities.title && (
+          <Text>Please enter a valid title!</Text>
+        )}
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Image URL</Text>
+          <TextInput
+            style={styles.input}
+            //value={imageUrl}
+            value={formState.inputValues.imageUrl}
+            //onChangeText={(text) => setImageUrl(text)}
+            onChangeText={(text) => textChangeHandler('imageUrl', text)}
+          />
+        </View>
+        {editedProduct ? null : (
+          <View style={styles.formControl}>
+            <Text style={styles.label}>Price</Text>
+            <TextInput
+              style={styles.input}
+              //value={price}
+              value={formState.inputValues.price}
+              //onChangeText={(text) => setPrice(text)}
+              onChangeText={(text) => textChangeHandler('price', text)}
+              keyboardType="decimal-pad"
+            />
+          </View>
+        )}
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Description</Text>
+          <TextInput
+            style={styles.input}
+            //value={description}
+            value={formState.inputValues.description}
+            //onChangeText={(text) => setDescription(text)}
+            onChangeText={(text) => textChangeHandler('description', text)}
+          />
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   form: {
     margin: 20,
+  },
+  formControl: {
+    width: '100%',
+  },
+  label: {
+    fontFamily: 'open-sans-bold',
+    marginVertical: 8,
+  },
+  input: {
+    paddingHorizontal: 2,
+    paddingVertical: 5,
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1,
   },
 });
 

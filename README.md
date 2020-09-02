@@ -137,10 +137,10 @@ Reducer function should be able to change that state when actions are dispatched
 
 ```
   //WITH THE USE OF useReducer, NO NEED TO USE THESE SEPARATE STATE ASSIGNMENTS
-  const [title, setTitle] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState('');
+  //const [title, setTitle] = useState('');
+  //const [imageUrl, setImageUrl] = useState('');
+  //const [price, setPrice] = useState('');
+  //const [description, setDescription] = useState('');
 
   //const [state, dispatch] = useReducer(reducer, initialState, init)
     useReducer(formReducer, {
@@ -228,6 +228,7 @@ const XXXScreen = (props) => {
     if (text.trim().length > 0) {
       isValid: true;
     }
+    //...much much more validity checks can be done here
     dispatchFormState({
       type: formActions.FORM_INPUT_UPDATE,
       value: text,
@@ -251,10 +252,10 @@ const XXXScreen = (props) => {
             autoCorrect
             returnKeyType="next"
           />
+          {!formState.inputValidities.title && (
+            <Text>Please enter a valid title!</Text>
+          )}
         </View>
-        {!formState.inputValidities.title && (
-          <Text>Please enter a valid title!</Text>
-        )}
         <View style={styles.formControl}>
           <Text style={styles.label}>Image URL</Text>
           <TextInput
@@ -269,5 +270,7 @@ const XXXScreen = (props) => {
     </ScrollView>
   );
 };
+
+//JUST A SIDE NOTE: For each TextInput and other components wrapping it, like View; and are alongside with it, like Text (for label or validation error message, an "Input" template could be used. (check /components/UI/Input.js)
 
 ```
