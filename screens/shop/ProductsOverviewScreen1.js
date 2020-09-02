@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   StyleSheet,
@@ -25,36 +25,21 @@ const ProductsOverviewScreen = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
 
-  const loadProducts = useCallback(async () => {
-    setError(null);
-    setIsLoading(true);
-    try {
-      await dispatch(fetchProducts());
-    } catch (err) {
-      setError(err.message);
-    }
-    setIsLoading(false);
-  }, [dispatch, setIsLoading, setError]);
-
-  /*
-//NO NEED TO USE THIS useEffect BECAUSE THE ONE BELOW IS BETTER DEFINED AND ALSO 
-//ALLOW US TO RELOAD THE PAGE IN EVERY FOCUS (TO GET THE LATEST DATA FROM DB)
-//useEffect below just works only once (hopefully) when the page loads!
+  //useEffect below just works only once (hopefully) when the page loads!
   useEffect(() => {
     // console.log('useEffect: fetchProducts');
-    loadProducts();
-  }, [dispatch, loadProducts]);
-*/
-
-  useEffect(() => {
-    //props.navigation.addListener('focus', () => { loadProducts() });
-    const willFocusSub = props.navigation.addListener('focus', loadProducts);
-
-    //clean-up
-    return () => {
-      willFocusSub.remove();
+    const loadProducts = async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+        await dispatch(fetchProducts());
+      } catch (err) {
+        setError(err.message);
+      }
+      setIsLoading(false);
     };
-  }, [loadProducts]);
+    loadProducts();
+  }, [dispatch]);
 
   const viewDetailHandler = (product) => {
     //console.log('view detail');
@@ -77,8 +62,7 @@ const ProductsOverviewScreen = (props) => {
         <Button
           title="Try Again"
           onPress={() => {
-            //props.navigation.navigate({ name: 'ProductsOverview' });
-            loadProducts();
+            props.navigation.navigate({ name: 'ProductsOverview' });
           }}
           color={Colors.primaryColor}
         />

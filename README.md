@@ -275,6 +275,16 @@ const XXXScreen = (props) => {
 
 ```
 
+# MORE INFO : How the React Hook useReducer Works
+
+https://dev.to/dtroyano86/how-react-s-usereducer-works-2cjj
+
+# How to Build a Form in React with useReducer
+
+https://dev.to/dtroyano86/how-to-build-a-form-in-react-with-usereducer-3o3a
+
+https://itnext.io/handling-complex-form-state-using-react-hooks-45370515e47
+
 # using Firebase as a API provider and doing all CRUD ops as if there is a back-end server between your app and DB
 
 > Normally direct connection from an app to DB is not secure. And you need to connect/call APIs from a back-end server, and this back-end server should connect to DB as secure as possible.

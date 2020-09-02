@@ -11,6 +11,12 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case productActions.FETCH_PRODUCTS:
+      return {
+        availableProducts: action.products,
+        userProducts: action.products.filter((prod) => prod.ownerId === 'u1'),
+      };
+
     case productActions.DELETE_PRODUCT:
       //delete from both "availableProducts" & "userProducts"
       return {
