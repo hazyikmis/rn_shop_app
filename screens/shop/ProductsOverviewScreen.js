@@ -20,6 +20,8 @@ const ProductsOverviewScreen = (props) => {
   //console.log(props);  //props contains navigation & route objects
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const [error, setError] = useState(null);
 
   const products = useSelector((state) => state.products.availableProducts);
@@ -27,14 +29,17 @@ const ProductsOverviewScreen = (props) => {
 
   const loadProducts = useCallback(async () => {
     setError(null);
-    setIsLoading(true);
+    //setIsLoading(true);
+    setIsRefreshing(true);
     try {
       await dispatch(fetchProducts());
     } catch (err) {
       setError(err.message);
     }
-    setIsLoading(false);
-  }, [dispatch, setIsLoading, setError]);
+    setIsRefreshing(false);
+    //setIsLoading(false);
+    //}, [dispatch, setIsLoading, setError]);
+  }, [dispatch, setError]);
 
   /*
 //NO NEED TO USE THIS useEffect BECAUSE THE ONE BELOW IS BETTER DEFINED AND ALSO 
@@ -47,6 +52,14 @@ const ProductsOverviewScreen = (props) => {
 */
 
   useEffect(() => {
+    // console.log('useEffect: fetchProducts');
+    setIsLoading(true);
+    loadProducts().then(() => {
+      setIsLoading(false);
+    });
+  }, [dispatch, loadProducts]);
+
+  useEffect(() => {
     //props.navigation.addListener('focus', () => { loadProducts() });
     const willFocusSub = props.navigation.addListener('focus', loadProducts);
 
@@ -54,8 +67,8 @@ const ProductsOverviewScreen = (props) => {
     return () => {
       willFocusSub.remove();
     };
-    //}, [loadProducts]);
-  }, []);
+  }, [loadProducts]);
+  //}, []);
 
   const viewDetailHandler = (product) => {
     //console.log('view detail');
@@ -105,6 +118,9 @@ const ProductsOverviewScreen = (props) => {
 
   return (
     <FlatList
+      onRefresh={loadProducts}
+      //refreshing={isLoading} //only problem is we are showing another View with ActivityIndicator
+      refreshing={isRefreshing}
       data={products}
       keyExtractor={(item) => item.id}
       renderItem={(itemData) => (
