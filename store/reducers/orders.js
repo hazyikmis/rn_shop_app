@@ -20,6 +20,10 @@ export default (state = initialState, action) => {
         ...state,
         orders: state.orders.concat(newOrder),
       };
+    case orderActions.FETCH_ORDERS:
+      return {
+        orders: action.orders,
+      };
     default:
       return state;
   }
