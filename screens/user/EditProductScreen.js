@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useReducer } from 'react';
+import React, { useEffect, useCallback, useReducer, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,11 +6,13 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { createProduct, updateProduct } from '../../store/actions/products';
 import Input from '../../components/UI/Input';
+import Colors from '../../constants/Colors';
 
 const formActions = {
   FORM_INPUT_UPDATE: 'FORM_INPUT_UPDATE',
@@ -45,6 +47,9 @@ const EditProductScreen = (props) => {
   //console.log(props); //props.route.params contains parameters (props) sent to this component
   //2 params (productId, productName) comes from UserProductsScreen
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+
   //const prodId = props.route.params && props.route.params.productId;
   //the statement above is very clever way of escaping "undefined" errors
   //if props.route.params exist then assign the value of (right side) props.route.params.productId to prodId
@@ -56,6 +61,12 @@ const EditProductScreen = (props) => {
   const editedProduct = useSelector((state) =>
     state.products.userProducts.find((prod) => prod.id === prodId)
   );
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('An error occurred!', error.message, [{ text: 'okay' }]);
+    }
+  }, [error]);
 
   const dispatch = useDispatch();
 
@@ -85,7 +96,7 @@ const EditProductScreen = (props) => {
   //THIS IS MIRACLE!
   //Define a function here (related to the data inside this page) and then using "useEffect" register this function to the route (add params of the route)
   //and then, this function accessible by the another screen/component (ShopNavigator) by using route.params['function']()
-  const submitHandler = useCallback(() => {
+  const submitHandler = useCallback(async () => {
     //console.log('Submitting!');
     //YOU CAN DISPATCH A FUNCTION HERE (YOU CAN DO WHATEVER YOU WANT)
     // if (!titleIsValid) {
@@ -96,34 +107,46 @@ const EditProductScreen = (props) => {
       ]);
       return;
     }
-    if (editedProduct) {
-      //dispatch(updateProduct(prodId, title, description, imageUrl));
-      // console.log('prodId:', prodId);
-      // console.log('title:', formState.inputValues.title);
-      // console.log('description:', formState.inputValues.description);
-      // console.log('imageUrl:', formState.inputValues.imageUrl);
 
-      dispatch(
-        updateProduct(
-          prodId,
-          formState.inputValues.title,
-          formState.inputValues.description,
-          formState.inputValues.imageUrl
-        )
-      );
-    } else {
-      // dispatch(createProduct(title, description, imageUrl, +price)); //to convert price to number!
-      dispatch(
-        createProduct(
-          formState.inputValues.title,
-          formState.inputValues.description,
-          formState.inputValues.imageUrl,
-          +formState.inputValues.price //to convert price to number!
-        )
-      );
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      if (editedProduct) {
+        //dispatch(updateProduct(prodId, title, description, imageUrl));
+        // console.log('prodId:', prodId);
+        // console.log('title:', formState.inputValues.title);
+        // console.log('description:', formState.inputValues.description);
+        // console.log('imageUrl:', formState.inputValues.imageUrl);
+
+        await dispatch(
+          updateProduct(
+            prodId,
+            formState.inputValues.title,
+            formState.inputValues.description,
+            formState.inputValues.imageUrl
+          )
+        );
+      } else {
+        // dispatch(createProduct(title, description, imageUrl, +price)); //to convert price to number!
+        await dispatch(
+          createProduct(
+            formState.inputValues.title,
+            formState.inputValues.description,
+            formState.inputValues.imageUrl,
+            +formState.inputValues.price //to convert price to number!
+          )
+        );
+      }
+      props.navigation.goBack();
+    } catch (err) {
+      setError(err.message);
     }
+
+    setIsLoading(false);
+
     // console.log('just before goback');
-    props.navigation.goBack();
+    // props.navigation.goBack();
     //}, [dispatch, prodId, title, description, imageUrl, price, titleIsValid]);
   }, [dispatch, prodId, formState]);
 
@@ -149,6 +172,14 @@ const EditProductScreen = (props) => {
     },
     [dispatchFormState]
   );
+
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.primaryColor} />
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -224,6 +255,11 @@ const EditProductScreen = (props) => {
 const styles = StyleSheet.create({
   form: {
     margin: 20,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

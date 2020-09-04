@@ -54,7 +54,8 @@ const ProductsOverviewScreen = (props) => {
     return () => {
       willFocusSub.remove();
     };
-  }, [loadProducts]);
+    //}, [loadProducts]);
+  }, []);
 
   const viewDetailHandler = (product) => {
     //console.log('view detail');
