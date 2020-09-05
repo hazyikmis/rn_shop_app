@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useCallback } from 'react';
+import React, { useState, useReducer, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Button,
   ActivityIndicator,
   Platform,
+  Alert,
 } from 'react-native';
 import Input from '../../components/UI/Input';
 import Card from '../../components/UI/Card';
@@ -47,6 +48,7 @@ const formReducer = (state, action) => {
 
 const AuthScreen = (props) => {
   const [isSignUp, setIsSignUp] = useState(false); //initially SignIn mode
+  const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -63,6 +65,13 @@ const AuthScreen = (props) => {
     formIsValid: false,
   });
 
+  //this useEffect added only for showing error!
+  useEffect(() => {
+    if (error) {
+      Alert.alert('An Error occurred!', error, [{ text: 'Okay' }]);
+    }
+  }, [error]);
+
   //const signUpHandler = () => {  //name changed because this button used for 2 purposes login & signup
   const authHandler = async () => {
     let action;
@@ -77,9 +86,21 @@ const AuthScreen = (props) => {
         formState.inputValues.password
       );
     }
+
+    setError(null);
     setIsLoading(true);
-    await dispatch(action);
-    setIsLoading(false);
+    try {
+      await dispatch(action);
+      props.navigation.navigate('ProductsOverview');
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+    }
+    //setIsLoading(false); //no need here, because if login is successful then we are navigating another screen
+
+    // if (error) {
+    //   Alert.alert('An Error occurred!', error, [{ text: 'Okay' }]);
+    // }
   };
 
   const inputChangeHandler = useCallback(

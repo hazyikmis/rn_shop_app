@@ -22,13 +22,24 @@ export const signUp = (email, password) => {
       }
     );
 
+    // const resData = await response.json();
+    // console.log(resData);
+
     if (!response.ok) {
-      throw new Error('SIGNUP: Something went wrong!');
+      //throw new Error('SIGNUP: Something went wrong!');
+      const errorResData = await response.json();
+      //console.log(errorResData);
+      const errorMessage = errorResData.error.message;
+
+      let errMessage = 'Something went wrong!';
+      if (errorMessage === 'EMAIL_EXISTS') {
+        errMessage = 'The email address is already in use by another account!';
+      } else if (errorMessage === 'TOO_MANY_ATTEMPTS_TRY_LATER') {
+        errMessage =
+          'All requests from this device blocked due to unusual activity. Try again later!';
+      }
+      throw new Error(errMessage);
     }
-
-    const resData = await response.json();
-
-    console.log(resData);
 
     await dispatch({ type: authActions.SIGNUP });
   };
@@ -51,13 +62,26 @@ export const login = (email, password) => {
       }
     );
 
+    // const resData = await response.json();
+    // console.log(resData);
+
     if (!response.ok) {
-      throw new Error('LOGIN: Something went wrong!');
+      //throw new Error('LOGIN: Something went wrong!');
+      const errorResData = await response.json();
+      //console.log(errorResData);
+      const errorMessage = errorResData.error.message;
+
+      let errMessage = 'Something went wrong!';
+      if (
+        errorMessage === 'EMAIL_NOT_FOUND' ||
+        errorMessage === 'INVALID_PASSWORD'
+      ) {
+        errMessage = 'This email/password is not valid!';
+      } else if (errorMessage === 'USER_DISABLED') {
+        errMessage = 'The user account has been disabled by an administrator.!';
+      }
+      throw new Error(errMessage);
     }
-
-    const resData = await response.json();
-
-    console.log(resData);
 
     await dispatch({ type: authActions.LOGIN });
   };
