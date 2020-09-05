@@ -15,6 +15,7 @@ import OrdersScreen from '../screens/shop/OrdersScreen';
 import { Ionicons } from '@expo/vector-icons';
 import UserProductsScreen from '../screens/user/UserProductsScreen';
 import EditProductScreen from '../screens/user/EditProductScreen';
+import AuthScreen from '../screens/user/AuthScreen';
 
 const defaultStackNavScreenOptions = {
   headerStyle: {
@@ -49,6 +50,12 @@ const StackProd = createStackNavigator();
 const ProductsNavigator = () => {
   return (
     <StackProd.Navigator screenOptions={defaultStackNavScreenOptions}>
+      <StackProd.Screen
+        name="Auth"
+        component={AuthScreen}
+        options={({ route }) => ({ headerTitle: 'Login' })}
+      />
+
       <StackProd.Screen
         name="ProductsOverview"
         component={ProductsOverviewScreen}

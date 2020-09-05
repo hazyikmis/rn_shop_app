@@ -21,6 +21,8 @@
 - npm install react-navigation-header-buttons
 - expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
 - npm install @react-navigation/stack
+  ...
+- npm i expo-linear-gradient
 
 > All stackNavigators should be connected with drawerNavigator. And this drawerNavigator needs to be exported as default.
 
@@ -160,7 +162,7 @@ Reducer function should be able to change that state when actions are dispatched
   });
 ```
 
-> Summarized usage of using react reducer for merging multiple states together in a form with multiple inputs (You can check detailed usage in the /screens/user/EditProductScreen.js)
+> Summarized usage of using react reducer for merging multiple states together in a form with multiple inputs (You can check detailed usage in the /screens/user/EditProductScreen.js or /screens/user/AuthScreen.js)
 
 ```
 import React, { useReducer } from 'react';
@@ -324,4 +326,49 @@ console.log(resData);
     "name": "-MGBcxfaehm00Snvmnkl",
   }
 */
+```
+
+# How to use .env vars in React Native app
+
+> Install https://github.com/goatandsheep/react-native-dotenv
+
+> Change your babel.config.js as below:
+
+```
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: ['module:babel-preset-expo'],
+    plugins: [
+      [
+        'module:react-native-dotenv',
+        {
+          moduleName: '@env',
+          path: '.env',
+          blacklist: null,
+          whitelist: null,
+          safe: false,
+          allowUndefined: true,
+        },
+      ],
+    ],
+  };
+};
+
+```
+
+> put your keys into .env file and keep it in your root folder
+
+```
+FIREBASE_API_KEY=loremipsum
+ANOTHER_KEY=loremipsum
+```
+
+> Use them by importing: (check /screens/user/AuthScreen.js)
+
+```
+import { FIREBASE_API_KEY } from '@env';
+...
+<Text>{FIREBASE_API_KEY}</Text>
+
 ```
