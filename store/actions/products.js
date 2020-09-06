@@ -7,6 +7,60 @@ export const productActions = {
 
 import Product from '../../models/product';
 
+//we have changed the rules on the firebase db as below:
+/*
+{
+  "rules": {
+    ".read": "now < 1601589600000",  // 2020-10-2
+    //".write": "now < 1601589600000",  // 2020-10-2
+    ".write": "auth != null",  // 2020-10-2
+  }
+}
+*/
+//This means that, in order to write to db, we need to send a valid token!
+//How to send a token: https://firebase.google.com/docs/database/rest/auth#authenticate_with_an_id_token
+//just add "auth" param to the query string!
+export const updateProduct = (id, title, description, imageUrl) => {
+  //redux thunk allow us to access to current store from here by using "getState"
+  //we need to retrieve token & userId from the "auth" portion of redux store
+
+  //return async (dispatch) => {
+  return async (dispatch, getState) => {
+    //console.log(getState);
+    const token = getState().auth.token;
+
+    //await fetch(
+    //since we started to check "response.ok", then we need to assign fetch result to response
+    const response = await fetch(
+      //`https://rn-shop-app-5b06a.firebaseio.com/products/${id}.json/`,
+      `https://rn-shop-app-5b06a.firebaseio.com/products/${id}.json?auth=${token}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          imageUrl,
+          //price,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Something went wrong!');
+    }
+
+    dispatch({
+      type: productActions.UPDATE_PRODUCT,
+      //productData: { title: title, description: description, imageUrl: imageUrl},
+      productId: id,
+      productData: { title, description, imageUrl },
+    });
+  };
+};
+
 export const deleteProduct = (productId) => {
   return async (dispatch) => {
     //await fetch(
@@ -25,6 +79,7 @@ export const deleteProduct = (productId) => {
     dispatch({ type: productActions.DELETE_PRODUCT, pId: productId });
   };
 };
+
 export const createProduct = (title, description, imageUrl, price) => {
   return async (dispatch) => {
     //you can execute any async code you want!
@@ -55,38 +110,6 @@ export const createProduct = (title, description, imageUrl, price) => {
       //productData: { title: title, description: description, imageUrl: imageUrl, price: price },
       //productData: { title, description, imageUrl, price },
       productData: { id: resData.name, title, description, imageUrl, price },
-    });
-  };
-};
-export const updateProduct = (id, title, description, imageUrl) => {
-  return async (dispatch) => {
-    //await fetch(
-    //since we started to check "response.ok", then we need to assign fetch result to response
-    const response = await fetch(
-      `https://rn-shop-app-5b06a.firebaseio.com/products/${id}.json/`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          imageUrl,
-          //price,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Something went wrong!');
-    }
-
-    dispatch({
-      type: productActions.UPDATE_PRODUCT,
-      //productData: { title: title, description: description, imageUrl: imageUrl},
-      productId: id,
-      productData: { title, description, imageUrl },
     });
   };
 };

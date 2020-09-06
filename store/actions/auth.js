@@ -1,6 +1,6 @@
 import { FIREBASE_API_KEY } from '@env';
 
-const authActions = {
+export const authActions = {
   SIGNUP: 'SIGNUP',
   LOGIN: 'LOGIN',
 };
@@ -22,9 +22,6 @@ export const signUp = (email, password) => {
       }
     );
 
-    // const resData = await response.json();
-    // console.log(resData);
-
     if (!response.ok) {
       //throw new Error('SIGNUP: Something went wrong!');
       const errorResData = await response.json();
@@ -41,7 +38,13 @@ export const signUp = (email, password) => {
       throw new Error(errMessage);
     }
 
-    await dispatch({ type: authActions.SIGNUP });
+    const resData = await response.json();
+    // console.log(resData);
+    await dispatch({
+      type: authActions.SIGNUP,
+      token: resData.idToken,
+      userId: resData.localId,
+    });
   };
 };
 
@@ -62,9 +65,6 @@ export const login = (email, password) => {
       }
     );
 
-    // const resData = await response.json();
-    // console.log(resData);
-
     if (!response.ok) {
       //throw new Error('LOGIN: Something went wrong!');
       const errorResData = await response.json();
@@ -83,6 +83,12 @@ export const login = (email, password) => {
       throw new Error(errMessage);
     }
 
-    await dispatch({ type: authActions.LOGIN });
+    const resData = await response.json();
+    // console.log(resData);
+    await dispatch({
+      type: authActions.LOGIN,
+      token: resData.idToken,
+      userId: resData.localId,
+    });
   };
 };
