@@ -62,11 +62,15 @@ export const updateProduct = (id, title, description, imageUrl) => {
 };
 
 export const deleteProduct = (productId) => {
-  return async (dispatch) => {
+  //return async (dispatch) => {
+  return async (dispatch, getState) => {
+    //console.log(getState);
+    const token = getState().auth.token;
+
     //await fetch(
     //since we started to check "response.ok", then we need to assign fetch result to response
     const response = await fetch(
-      `https://rn-shop-app-5b06a.firebaseio.com/products/${productId}.json/`,
+      `https://rn-shop-app-5b06a.firebaseio.com/products/${productId}.json?auth=${token}`,
       {
         method: 'DELETE',
       }
@@ -81,12 +85,15 @@ export const deleteProduct = (productId) => {
 };
 
 export const createProduct = (title, description, imageUrl, price) => {
-  return async (dispatch) => {
+  //return async (dispatch) => {
+  return async (dispatch, getState) => {
+    //console.log(getState);
+    const token = getState().auth.token;
     //you can execute any async code you want!
     //the dispatch function below is the actual dispatching operation to reducers
     //and handled by ReduxThunk middleware
     const response = await fetch(
-      'https://rn-shop-app-5b06a.firebaseio.com/products.json/',
+      'https://rn-shop-app-5b06a.firebaseio.com/products.json?auth=${token}',
       {
         method: 'POST',
         headers: {
