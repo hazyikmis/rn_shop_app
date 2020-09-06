@@ -6,10 +6,13 @@ export const orderActions = {
 };
 
 export const fetchOrders = () => {
-  return async (dispatch) => {
+  //return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const userId = getState().auth.userId; //gets the "userId" value from redux store auth portion
     try {
       const response = await fetch(
-        'https://rn-shop-app-5b06a.firebaseio.com/orders/u1.json/'
+        //'https://rn-shop-app-5b06a.firebaseio.com/orders/u1.json/'
+        `https://rn-shop-app-5b06a.firebaseio.com/orders/${userId}.json/`
       );
       //DEFAULT fetch statement is GET type and no need to send headers & body
 
@@ -42,12 +45,17 @@ export const fetchOrders = () => {
 
 //addOrder action creator
 export const addOrder = (cartItems, totalAmount) => {
-  return async (dispatch) => {
+  //return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const token = getState().auth.token; //gets the "token" value from redux store auth portion
+    const userId = getState().auth.userId; //gets the "userId" value from redux store auth portion
+
     const date = new Date();
     const response = await fetch(
       //be careful: we are not storing orders directly under "orders"
       //we have sub folders (sub collections or sub objects) for each user!
-      'https://rn-shop-app-5b06a.firebaseio.com/orders/u1.json/',
+      //'https://rn-shop-app-5b06a.firebaseio.com/orders/u1.json/',
+      `https://rn-shop-app-5b06a.firebaseio.com/orders/${userId}.json?auth=${token}`,
       {
         method: 'POST',
         headers: {

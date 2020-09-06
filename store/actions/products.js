@@ -89,6 +89,7 @@ export const createProduct = (title, description, imageUrl, price) => {
   return async (dispatch, getState) => {
     //console.log(getState);
     const token = getState().auth.token;
+    const userId = getState().auth.userId;
     //you can execute any async code you want!
     //the dispatch function below is the actual dispatching operation to reducers
     //and handled by ReduxThunk middleware
@@ -104,6 +105,7 @@ export const createProduct = (title, description, imageUrl, price) => {
           description,
           imageUrl,
           price,
+          ownerId: userId,
         }),
       }
     );
@@ -116,13 +118,23 @@ export const createProduct = (title, description, imageUrl, price) => {
       type: productActions.CREATE_PRODUCT,
       //productData: { title: title, description: description, imageUrl: imageUrl, price: price },
       //productData: { title, description, imageUrl, price },
-      productData: { id: resData.name, title, description, imageUrl, price },
+      productData: {
+        id: resData.name,
+        title,
+        description,
+        imageUrl,
+        price,
+        ownerId: userId,
+      },
     });
   };
 };
 
 export const fetchProducts = () => {
-  return async (dispatch) => {
+  //return async (dispatch) => {
+  return async (dispatch, getState) => {
+    //console.log(getState);
+    const userId = getState().auth.userId;
     try {
       const response = await fetch(
         'https://rn-shop-app-5b06a.firebaseio.com/products.json/'
@@ -141,7 +153,8 @@ export const fetchProducts = () => {
         loadedProducts.push(
           new Product(
             key,
-            'u1',
+            //'u1',
+            resData[key].ownerId, //not u1' anymore
             resData[key].title,
             resData[key].imageUrl,
             resData[key].description,
@@ -153,6 +166,7 @@ export const fetchProducts = () => {
       dispatch({
         type: productActions.FETCH_PRODUCTS,
         products: loadedProducts,
+        userProducts: loadedProducts.filter((prod) => prod.ownerId === userId),
       });
     } catch (error) {
       //send to custom analytics server
