@@ -94,7 +94,8 @@ export const createProduct = (title, description, imageUrl, price) => {
     //the dispatch function below is the actual dispatching operation to reducers
     //and handled by ReduxThunk middleware
     const response = await fetch(
-      'https://rn-shop-app-5b06a.firebaseio.com/products.json?auth=${token}',
+      //'https://rn-shop-app-5b06a.firebaseio.com/products.json?auth=${token}',
+      `https://rn-shop-app-5b06a.firebaseio.com/products.json?auth=${token}`,
       {
         method: 'POST',
         headers: {
