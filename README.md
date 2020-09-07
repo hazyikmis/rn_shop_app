@@ -6,7 +6,7 @@
 <img src="./zz_screenshots/Screenshot_1598978760.png" width="200" height="400" />
 <img src="./zz_screenshots/Screenshot_1598978773.png" width="200" height="400" />
 <img src="./zz_screenshots/Screenshot_1598978796.png" width="200" height="400" />
-<img src="./zz_screenshots/Screenshot_1598978822.png" width="200" height="400" />
+<img src="./zz_screenshots/Screenshot_1598978821.png" width="200" height="400" />
 <img src="./zz_screenshots/Screenshot_1598978827.png" width="200" height="400" />
 <img src="./zz_screenshots/Screenshot_1598978836.png" width="200" height="400" />
 <img src="./zz_screenshots/Screenshot_1598978857.png" width="200" height="400" />
