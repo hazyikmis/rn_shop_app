@@ -7,15 +7,25 @@ import { authActions } from '../actions/auth';
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case authActions.LOGIN:
+    // case authActions.LOGIN:
+    //   return {
+    //     token: action.token,
+    //     userId: action.userId,
+    //   };
+    // case authActions.SIGNUP:
+    //   return {
+    //     token: action.token,
+    //     userId: action.userId,
+    //   };
+    case authActions.AUTHENTICATE:
       return {
         token: action.token,
         userId: action.userId,
       };
-    case authActions.SIGNUP:
+    case authActions.LOGOUT:
       return {
-        token: action.token,
-        userId: action.userId,
+        token: null,
+        userId: null,
       };
     default:
       return state;

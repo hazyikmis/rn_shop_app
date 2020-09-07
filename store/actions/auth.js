@@ -1,8 +1,24 @@
 import { FIREBASE_API_KEY } from '@env';
 
+import { AsyncStorage } from 'react-native';
+
 export const authActions = {
-  SIGNUP: 'SIGNUP',
-  LOGIN: 'LOGIN',
+  //SIGNUP: 'SIGNUP',
+  //LOGIN: 'LOGIN',
+  AUTHENTICATE: 'AUTHENTICATE',
+  LOGOUT: 'LOGOUT',
+};
+
+let timer;
+
+//export const authenticate = (userId, token) => {
+export const authenticate = (userId, token, expiryTime) => {
+  // setLogoutTimer(); //I need to call also this, but structure is not ok
+  // return { type: authActions.AUTHENTICATE, userId, token };
+  return (dispatch) => {
+    dispatch(setLogoutTimer(expiryTime));
+    dispatch({ type: authActions.AUTHENTICATE, userId, token });
+  };
 };
 
 export const signUp = (email, password) => {
@@ -40,11 +56,19 @@ export const signUp = (email, password) => {
 
     const resData = await response.json();
     // console.log(resData);
-    await dispatch({
-      type: authActions.SIGNUP,
-      token: resData.idToken,
-      userId: resData.localId,
-    });
+    //dispatch({ type: authActions.SIGNUP, token: resData.idToken, userId: resData.localId });
+    //dispatch(authenticate(resData.localId, resData.idToken));
+    dispatch(
+      authenticate(
+        resData.localId,
+        resData.idToken,
+        parseInt(resData.expiresIn) * 1000
+      )
+    );
+    const expirationDate = new Date(
+      new Date().getTime() + parseInt(resData.expiresIn) * 1000
+    );
+    saveDataToStorage(resData.idToken, resData.localId, expirationDate);
   };
 };
 
@@ -85,10 +109,52 @@ export const login = (email, password) => {
 
     const resData = await response.json();
     // console.log(resData);
-    await dispatch({
-      type: authActions.LOGIN,
-      token: resData.idToken,
-      userId: resData.localId,
-    });
+    // dispatch({
+    //   type: authActions.LOGIN,
+    //   token: resData.idToken,
+    //   userId: resData.localId,
+    // });
+    //dispatch(authenticate(resData.localId, resData.idToken));
+    dispatch(
+      authenticate(
+        resData.localId,
+        resData.idToken,
+        parseInt(resData.expiresIn) * 1000
+      )
+    );
+    const expirationDate = new Date(
+      new Date().getTime() + parseInt(resData.expiresIn) * 1000
+    );
+    saveDataToStorage(resData.idToken, resData.localId, expirationDate);
   };
+};
+
+export const logout = () => {
+  clearLogoutTimer();
+  AsyncStorage.removeItem('userData');
+  return { type: authActions.LOGOUT };
+};
+
+const clearLogoutTimer = () => {
+  if (timer) {
+    clearTimeout(timer);
+  }
+};
+
+//kicking the user logout after expiration of token is not a good idea!
+//especially while he/she using the app, only meaningful if he/she is idle
+const setLogoutTimer = (expirationTime) => {
+  return (dispatch) => {
+    timer = setTimeout(() => {
+      dispatch(logout());
+    }, expirationTime);
+    //}, expirationTime / 1000); //testing auto logout after token expires
+  };
+};
+
+const saveDataToStorage = (token, userId, expirationDate) => {
+  AsyncStorage.setItem(
+    'userData',
+    JSON.stringify({ token, userId, expiryDate: expirationDate.toISOString() })
+  );
 };

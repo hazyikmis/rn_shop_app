@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 //import { ProductsNavigator as ShopNavigator } from './navigation/ShopNavigator';
 import ShopNavigator from './navigation/ShopNavigator';
+import ShopNavigationContainer from './navigation/ShopNavigationContainer';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 
@@ -50,6 +51,7 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <ShopNavigator />
+        {/* <ShopNavigationContainer /> DID NOT WORK! */}
       </NavigationContainer>
     </Provider>
   );

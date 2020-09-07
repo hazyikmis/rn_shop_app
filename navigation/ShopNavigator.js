@@ -1,7 +1,11 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, SafeAreaView, Button } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+} from '@react-navigation/drawer';
 
 import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
 import Colors from '../constants/Colors';
@@ -16,6 +20,10 @@ import { Ionicons } from '@expo/vector-icons';
 import UserProductsScreen from '../screens/user/UserProductsScreen';
 import EditProductScreen from '../screens/user/EditProductScreen';
 import AuthScreen from '../screens/user/AuthScreen';
+import StartupScreen from '../screens/StartupScreen';
+
+import { useDispatch } from 'react-redux'; //imported only for logout button inside the drawer menu
+import * as authActs from '../store/actions/auth'; //imported only for logout button inside the drawer menu
 
 const defaultStackNavScreenOptions = {
   headerStyle: {
@@ -44,12 +52,42 @@ const drawerMenu = (navigation) => (
   </HeaderButtons>
 );
 
+const CustomDrawerContent = (props) => {
+  const dispatch = useDispatch();
+  return (
+    //you can just put <Button> here, but then you lose all screens,
+    //because of that we need to use <DrawerContentScrollView> & <DrawerItemList> and then <Button>
+    //SafeAreaView not too much important!
+    <DrawerContentScrollView {...props}>
+      <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+        <DrawerItemList {...props} />
+        <Button
+          title="Logout"
+          color={Colors.primaryColor}
+          onPress={() => {
+            //props.navigation.navigate('SomeScreen');
+            //console.log('logout!')
+            dispatch(authActs.logout());
+            //props.navigation.navigate('Auth');  //handled by ShopNavigatorContainer.js
+          }}
+        />
+      </SafeAreaView>
+    </DrawerContentScrollView>
+  );
+};
+
 //PRODUCTS NAVIGATOR STACK
 const StackProd = createStackNavigator();
 
 const ProductsNavigator = () => {
   return (
     <StackProd.Navigator screenOptions={defaultStackNavScreenOptions}>
+      <StackProd.Screen
+        name="Startup"
+        component={StartupScreen}
+        //options={({ route }) => ({ headerTitle: 'Login' })}
+      />
+
       <StackProd.Screen
         name="Auth"
         component={AuthScreen}
@@ -77,12 +115,14 @@ const ProductsNavigator = () => {
           ),
         })}
       />
+
       <StackProd.Screen
         name="ProductDetail"
         component={ProductDetailScreen}
         //options={{ headerTitle: '...' }}
         options={({ route }) => ({ headerTitle: route.params.product.title })}
       />
+
       <StackProd.Screen
         name="Cart"
         component={CartScreen}
@@ -176,6 +216,7 @@ const ShopNavigator = () => {
           fontFamily: 'open-sans-bold',
         },
       }}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen
         name="Products"
