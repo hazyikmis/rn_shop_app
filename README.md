@@ -374,3 +374,69 @@ import { FIREBASE_API_KEY } from '@env';
 <Text>{FIREBASE_API_KEY}</Text>
 
 ```
+
+# More elegant way of using env vars in React Native app
+
+- No need to install react-native-dotenv and no need to change babel.config.js.
+- Just put your keys in a regular "env.js" file in somewhere in your project
+- Content like:
+
+```
+const vars = {
+  googleApiKey: 'loremipsum',
+};
+
+export default vars;
+```
+
+- And then include in other files when required:
+
+```
+import ENV from '../env';
+...
+const imagePreviewUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:A%7C${lat}, ${lng}&key=${ENV.googleApiKey}`;
+```
+
+- BUT, THE IMPORTANT THING IS: DO NOT FORGET TO ADD THIS "env.js" FILE INTO ".gitignore" TO EXCLUDE IT FROM PUSHING/UPLOADING TO GITHUB.
+
+# More more elegant way of using env vars in React Native app
+
+https://www.udemy.com/course/react-native-the-practical-guide/learn/lecture/15746980
+
+This basic file (env.js) just exports a JS object - but you could get more fancy and for example export different environment variables for your development flow (i.e. for testing/ developing your app) and for production (i.e. for when you publish your app).
+
+The special **DEV** global variable offered by Expo helps you - it's a variable which you can always access anywhere in your Expo-driven React Native project to determine whether you're running this app in development mode or not.
+
+Therefore, you could create a more elaborate environment variables file like this one:
+
+> env.js
+
+```
+const variables = {
+    development: {
+        googleApiKey: 'abc'
+    },
+    production: {
+        googleApiKey: 'xyz'
+    }
+};
+
+const getEnvVariables = () => {
+    if (__DEV__) {
+        return variables.development; // return this if in development mode
+    }
+    return variables.production; // otherwise, return this
+};
+
+export default getEnvVariables; // export a reference to the function
+```
+
+You would use that file like this:
+
+> someOtherFile.js
+
+```
+import ENV from './env';
+...
+const apiKey = ENV().googleApiKey;
+```
