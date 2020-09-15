@@ -79,10 +79,11 @@ const CustomDrawerContent = (props) => {
 //PRODUCTS NAVIGATOR STACK
 const StackProd = createStackNavigator();
 
+//const ProductsNavigator = () => {
 const ProductsNavigator = () => {
   return (
     <StackProd.Navigator screenOptions={defaultStackNavScreenOptions}>
-      <StackProd.Screen
+      {/* <StackProd.Screen
         name="Startup"
         component={StartupScreen}
         //options={({ route }) => ({ headerTitle: 'Login' })}
@@ -92,7 +93,7 @@ const ProductsNavigator = () => {
         name="Auth"
         component={AuthScreen}
         options={({ route }) => ({ headerTitle: 'Login' })}
-      />
+      /> */}
 
       <StackProd.Screen
         name="ProductsOverview"

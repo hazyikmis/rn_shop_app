@@ -59,13 +59,27 @@ const ProductsOverviewScreen = (props) => {
     });
   }, [dispatch, loadProducts]);
 
+  // useEffect(() => {
+  //   //props.navigation.addListener('focus', () => { loadProducts() });
+  //   const willFocusSub = props.navigation.addListener('focus', loadProducts);
+
+  //   //clean-up
+  //   return () => {
+  //     willFocusSub.remove();
+  //   };
+  // }, [loadProducts]);
+  // //}, []);
+
+  // THE BELOW CODE USED FOR CLEARING THE PROBLEM OF "...remove is undefined"
+  // ‼TECHNICALLY SAME WITH THE COMMENTED useEffect ABOVE ??? BUT IT DOES NOT WORK PROPERLY, BUT THIS BELOW WORKS!
+
   useEffect(() => {
     //props.navigation.addListener('focus', () => { loadProducts() });
-    const willFocusSub = props.navigation.addListener('focus', loadProducts);
+    const unsubscribe = props.navigation.addListener('focus', loadProducts);
 
     //clean-up
     return () => {
-      willFocusSub.remove();
+      unsubscribe();
     };
   }, [loadProducts]);
   //}, []);

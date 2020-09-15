@@ -7,9 +7,14 @@ export const authActions = {
   //LOGIN: 'LOGIN',
   AUTHENTICATE: 'AUTHENTICATE',
   LOGOUT: 'LOGOUT',
+  DID_TRY_AUTO_LOGIN: 'DID_TRY_AUTO_LOGIN',
 };
 
 let timer;
+
+export const didAutoLoginTry = () => {
+  return { type: authActions.DID_TRY_AUTO_LOGIN };
+};
 
 //export const authenticate = (userId, token) => {
 export const authenticate = (userId, token, expiryTime) => {
