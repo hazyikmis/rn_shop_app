@@ -440,3 +440,12 @@ import ENV from './env';
 ...
 const apiKey = ENV().googleApiKey;
 ```
+
+# Some Redux Refreshment:
+
+<div style="display: flex;">
+<img src="./zz_screenshots/redux_01.JPG" />
+<img src="./zz_screenshots/redux_02.JPG" />
+<img src="./zz_screenshots/redux_03.JPG" />
+<img src="./zz_screenshots/redux_03_explanation.JPG" />
+</div>
